@@ -2,6 +2,9 @@ public enum MonitorDescription: Equatable, Sendable {
     case sequenceNumber(Int)
     case main
     case secondary
+    case builtIn
+    case external
+    case nonMainExternal
     case pattern(CaseInsensitiveRegex)
 
     public static func pattern(_ raw: String) -> MonitorDescription? {
@@ -18,11 +21,13 @@ public func parseMonitorDescription(_ raw: String) -> ResOrStr<MonitorDescriptio
             ? .success(.sequenceNumber(int))
             : .failure("Monitor sequence numbers uses 1-based indexing. Values less than 1 are illegal")
     }
-    if raw == "main" {
-        return .success(.main)
-    }
-    if raw == "secondary" {
-        return .success(.secondary)
+    switch raw {
+        case "main": return .success(.main)
+        case "secondary": return .success(.secondary)
+        case "built-in": return .success(.builtIn)
+        case "external": return .success(.external)
+        case "non-main-external": return .success(.nonMainExternal)
+        default: break
     }
 
     return raw.isEmpty

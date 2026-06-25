@@ -7,6 +7,7 @@ private struct MonitorImpl {
     let rect: Rect
     let visibleRect: Rect
     let isMain: Bool
+    let isBuiltIn: Bool
 }
 
 extension MonitorImpl: Monitor {
@@ -24,6 +25,7 @@ protocol Monitor: AeroAny {
     var width: CGFloat { get }
     var height: CGFloat { get }
     var isMain: Bool { get }
+    var isBuiltIn: Bool { get }
 }
 
 final class LazyMonitor: Monitor {
@@ -33,6 +35,7 @@ final class LazyMonitor: Monitor {
     let width: CGFloat
     let height: CGFloat
     let isMain: Bool
+    let isBuiltIn: Bool
     private var _rect: Rect?
     private var _visibleRect: Rect?
 
@@ -43,6 +46,7 @@ final class LazyMonitor: Monitor {
         self.height = screen.frame.height // Don't call rect because it would cause recursion during mainMonitor init
         self.screen = screen
         self.isMain = isMain
+        self.isBuiltIn = screen.isBuiltInDisplay
     }
 
     var rect: Rect {
@@ -66,11 +70,19 @@ extension NSScreen {
             rect: rect,
             visibleRect: visibleRect,
             isMain: isMainScreen,
+            isBuiltIn: isBuiltInDisplay,
         )
     }
 
     fileprivate var isMainScreen: Bool {
         frame.minX == 0 && frame.minY == 0
+    }
+
+    fileprivate var isBuiltInDisplay: Bool {
+        guard let displayId = deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID else {
+            return false
+        }
+        return CGDisplayIsBuiltin(displayId) != 0
     }
 
     /// The property is a replacement for Apple's crazy ``frame``
@@ -92,6 +104,7 @@ private let testMonitor = MonitorImpl(
     rect: testMonitorRect,
     visibleRect: testMonitorRect,
     isMain: true,
+    isBuiltIn: false,
 )
 
 var mainMonitor: Monitor {

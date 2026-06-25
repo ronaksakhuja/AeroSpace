@@ -7,8 +7,13 @@ extension MonitorDescription {
             case .main: mainMonitor
             case .pattern(let regex): sortedMonitors.first { $0.name.contains(caseInsensitiveRegex: regex) }
             case .secondary:
-                sortedMonitors.takeIf { $0.count == 2 }?
-                    .first { $0.rect.topLeftCorner != mainMonitor.rect.topLeftCorner }
+                sortedMonitors.first { $0.rect.topLeftCorner != mainMonitor.rect.topLeftCorner }
+            case .builtIn:
+                sortedMonitors.first { $0.isBuiltIn }
+            case .external:
+                sortedMonitors.first { !$0.isBuiltIn }
+            case .nonMainExternal:
+                sortedMonitors.first { !$0.isBuiltIn && $0.rect.topLeftCorner != mainMonitor.rect.topLeftCorner }
         }
     }
 }

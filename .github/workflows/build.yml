@@ -62,3 +62,10 @@ jobs:
       - name: cat ./.release/xcodebuild.log
         if: ${{ always() }}
         run: 'if test -f ./.release/xcodebuild.log; then cat ./.release/xcodebuild.log; fi'
+      - name: Upload AeroSpace.app artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: AeroSpace-${{ matrix.os }}
+          path: .release/AeroSpace.app
+          if-no-files-found: warn
