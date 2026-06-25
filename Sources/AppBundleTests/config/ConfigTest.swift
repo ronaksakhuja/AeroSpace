@@ -291,7 +291,7 @@ final class ConfigTest: XCTestCase {
                 workspace_name_1 = 1                            # Sequence number of the monitor (from left to right, 1-based indexing)
                 workspace_name_2 = 'main'                       # main monitor
                 workspace_name_3 = 'secondary'                  # non-main monitor (in case when there are only two monitors)
-                workspace_name_4 = 'built-in'                   # case insensitive regex substring
+                workspace_name_4 = 'built-in'                   # built-in (laptop) display
                 workspace_name_5 = '^built-in retina display$'  # case insensitive regex match
                 workspace_name_6 = ['secondary', 1]             # you can specify multiple patterns. The first matching pattern will be used
                 7 = "foo"
@@ -306,7 +306,7 @@ final class ConfigTest: XCTestCase {
                 "workspace_name_1": [.sequenceNumber(1)],
                 "workspace_name_2": [.main],
                 "workspace_name_3": [.secondary],
-                "workspace_name_4": [.pattern("built-in")!],
+                "workspace_name_4": [.builtIn],
                 "workspace_name_5": [.pattern("^built-in retina display$")!],
                 "workspace_name_6": [.secondary, .sequenceNumber(1)],
                 "workspace_name_x": [.sequenceNumber(2)],
@@ -506,7 +506,7 @@ final class ConfigTest: XCTestCase {
                     bottom: .constant(13),
                     top: .perMonitor(
                         [
-                            PerMonitorValue(description: .pattern("built-in")!, value: 3),
+                            PerMonitorValue(description: .builtIn, value: 3),
                             PerMonitorValue(description: .secondary, value: 4),
                         ],
                         default: 6,
